@@ -9,6 +9,8 @@
 namespace Action;
 
 
+use Container\View\JsonView;
+use Contract\ExceptionCode;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -21,10 +23,15 @@ class GetCpmAction implements ActionInterface
      * @var \Redis
      */
     private $redis;
+    /**
+     * @var JsonView
+     */
+    private $view;
 
     public function __construct(ContainerInterface $container)
     {
         $this->redis = $container['redis'];
+        $this->view = $container['view'];
     }
 
     /**
@@ -42,17 +49,16 @@ class GetCpmAction implements ActionInterface
         $machine = $request->getParam('machine');
         $tag = $request->getParam('tag');
 
-        if(!$wxopenid) throw  new \Exception("wxopenid is not found!");
-        if(!$machine) throw new \Exception('machine is not found!');
+        if(!$wxopenid) return $this->view->renderError($response,"wxopenid is not found!",ExceptionCode::NAME_INVAIL_VALUE_EXCEPTION);
+        if(!$machine) return $this->view->renderError($response,'machine is not found!',ExceptionCode::NAME_INVAIL_VALUE_EXCEPTION);
 
         $url = $this->redis->hGet('cpm','url');
 
         $baseUrl = $this->redis->hGet('cpm','baseUrl');
 
         if($this->redis->hExists('cpm',$tag)){
-            return $response->withJson([
-               'exists'=>true,
-               'url'=>$baseUrl
+            return $this->view->renderError($response,"cpm can not set on [$tag]",ExceptionCode::NAME_EXIST_EXCEPTION,[
+                'url'=>$baseUrl
             ]);
         }
 

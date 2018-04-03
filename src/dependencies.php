@@ -23,3 +23,7 @@ $container['redis'] = function($c){
   $redis->connect("redis",6379);
   return $redis;
 };
+
+$container['view'] = function ($c){
+    return new \Container\View\JsonView();
+};

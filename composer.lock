@@ -4,8 +4,53 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "b0c4ff9e8fa71767616259ad2be0687c",
+    "content-hash": "3df1ce7328856d4306bbf5a4c41f755b",
     "packages": [
+        {
+            "name": "bdemirkir/slim-json-view",
+            "version": "0.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bdemirkir/slim-json-view.git",
+                "reference": "4308e2d1abb474edfad67acb7c5ef2a01e1c3f04"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://files.phpcomposer.com/files/bdemirkir/slim-json-view/4308e2d1abb474edfad67acb7c5ef2a01e1c3f04.zip",
+                "reference": "4308e2d1abb474edfad67acb7c5ef2a01e1c3f04",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.0",
+                "psr/http-message": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Slim\\Views\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Berk Demirkır",
+                    "email": "bdemirkir@gmail.com"
+                }
+            ],
+            "description": "Slim Framework 3 view helper for simple JSON API's",
+            "homepage": "https://github.com/bdemirkir/slim-json-view",
+            "keywords": [
+                "framework",
+                "helper",
+                "json",
+                "slim",
+                "view"
+            ],
+            "time": "2015-12-24T11:04:47+00:00"
+        },
         {
             "name": "container-interop/container-interop",
             "version": "1.2.0",

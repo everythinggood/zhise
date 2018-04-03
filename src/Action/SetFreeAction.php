@@ -9,6 +9,8 @@
 namespace Action;
 
 
+use Container\View\JsonView;
+use Contract\ExceptionCode;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -21,19 +23,17 @@ class SetFreeAction implements ActionInterface
      * @var \Redis
      */
     private $redis;
+    /**
+     * @var JsonView
+     */
+    private $view;
 
     public function __construct(ContainerInterface $container)
     {
         $this->redis = $container['redis'];
+        $this->view = $container['view'];
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @param array $args
-     * @return mixed|static
-     * @throws \Exception
-     */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args)
     {
 
@@ -42,16 +42,16 @@ class SetFreeAction implements ActionInterface
         $wxopenid = $request->getParam('wxopenid');
         $machine = $request->getParam('machine');
 
-        if(!$wxopenid) throw  new \Exception("wxopenid is not found!");
-        if(!$machine) throw new \Exception('machine is not found!');
+        if(!$wxopenid) return $this->view->renderError($response,"wxopenid is not found!",ExceptionCode::NAME_INVAIL_VALUE_EXCEPTION);
+        if(!$machine) return $this->view->renderError($response,'machine is not found!',ExceptionCode::NAME_INVAIL_VALUE_EXCEPTION);
 
         if($this->redis->exists($wxopenid)){
-            throw new \Exception('wxopenid is exists!');
+            return $this->view->renderError($response,"wxopenid is exists!",ExceptionCode::NAME_EXIST_EXCEPTION);
         }
 
         $this->redis->set($wxopenid,$machine);
 
-        return $response->withJson([
+        return $this->view->renderSuccess($response,[
             'set'=>true,
             'wxopenid'=>$wxopenid,
             'machine'=>$machine
