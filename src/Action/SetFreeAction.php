@@ -45,11 +45,15 @@ class SetFreeAction implements ActionInterface
         if(!$wxopenid) return $this->view->renderError($response,"wxopenid is not found!",ExceptionCode::NAME_INVAIL_VALUE_EXCEPTION);
         if(!$machine) return $this->view->renderError($response,'machine is not found!',ExceptionCode::NAME_INVAIL_VALUE_EXCEPTION);
 
-        if($this->redis->exists($wxopenid)){
+        $date = (new \DateTime())->format('Y-m-d');
+
+        $key = $wxopenid."_$date";
+
+        if($this->redis->exists($key)){
             return $this->view->renderError($response,"wxopenid is exists!",ExceptionCode::NAME_EXIST_EXCEPTION);
         }
 
-        $this->redis->set($wxopenid,$machine);
+        $this->redis->set($key,$machine);
 
         return $this->view->renderSuccess($response,[
             'set'=>true,
