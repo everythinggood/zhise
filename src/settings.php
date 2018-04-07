@@ -21,6 +21,7 @@ return [
         ],
 
         'basicAuth' => [
+            "secure" => false,
             'users' => [
                 getenv('user') => getenv('password')
             ]
