@@ -59,5 +59,9 @@
     	"tag":"01"
     }
     response:
+    {
+        "exist": true,
+        "url": "http://cpc.tuanai.com/ad?id=82"
+    }
     
     
