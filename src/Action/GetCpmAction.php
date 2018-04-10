@@ -62,11 +62,17 @@ class GetCpmAction implements ActionInterface
                 'url'=>$baseUrl
             ]);
         }
+        $this->autoAcountCpm($wxopenid,$machine);
 
         return $response->withJson([
              'exist'=>true,
             'url'=>$url
         ]);
+    }
+
+    protected function autoAcountCpm($wxopenid,$machine){
+        $listName = "cpm".(new \DateTime())->format('Y-m-d');
+        $this->redis->lPush($listName,join('_',[$wxopenid,$machine]));
     }
 
 }
