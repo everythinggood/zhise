@@ -11,6 +11,7 @@ namespace Action;
 
 use Container\View\JsonView;
 use Contract\ExceptionCode;
+use Monolog\Logger;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -27,11 +28,16 @@ class GetCpmAction implements ActionInterface
      * @var JsonView
      */
     private $view;
+    /**
+     * @var Logger
+     */
+    private $logger;
 
     public function __construct(ContainerInterface $container)
     {
         $this->redis = $container['redis'];
         $this->view = $container['view'];
+        $this->logger = $container['logger'];
     }
 
     /**
@@ -56,23 +62,29 @@ class GetCpmAction implements ActionInterface
 
         $baseUrl = $this->redis->hGet('cpm','baseUrl');
 
+        $this->logger->addInfo("getCpmAction-request",[$wxopenid,$machine,$tag,$url,$baseUrl]);
+
         if(!$this->redis->hExists('cpm',$tag)){
             return $this->view->renderError($response,"cpm can not set on [$tag]",ExceptionCode::NAME_NOT_EXIST_EXCEPTION,[
                 'exist'=>false,
                 'url'=>$baseUrl
             ]);
         }
-        $this->autoAcountCpm($wxopenid,$machine);
+
+        $addRequestParam = $this->autoAcountCpm($wxopenid,$machine);
+
+        $this->logger->addInfo('getCpmAction-response',[$wxopenid,$machine,$tag,$url,$baseUrl,$addRequestParam]);
 
         return $response->withJson([
-             'exist'=>true,
+            "addRequestParam"=>$addRequestParam,
+            'exist'=>true,
             'url'=>$url
         ]);
     }
 
     protected function autoAcountCpm($wxopenid,$machine){
         $listName = "cpm".(new \DateTime())->format('Y-m-d');
-        $this->redis->lPush($listName,join('_',[$wxopenid,$machine]));
+        return $this->redis->lPush($listName,join('_',[$wxopenid,$machine]));
     }
 
 }

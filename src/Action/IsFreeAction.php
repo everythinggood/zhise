@@ -10,6 +10,7 @@ namespace Action;
 
 use Container\View\JsonView;
 use Contract\ExceptionCode;
+use Monolog\Logger;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -26,11 +27,16 @@ class IsFreeAction implements ActionInterface
      * @var JsonView
      */
     private $view;
+    /**
+     * @var Logger
+     */
+    private $logger;
 
     public function __construct(ContainerInterface $container)
     {
         $this->redis = $container['redis'];
         $this->view = $container['view'];
+        $this->logger = $container['logger'];
     }
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args)
@@ -42,6 +48,8 @@ class IsFreeAction implements ActionInterface
 
         if(!$wxopenid) return $this->view->renderError($response,"wxopenid is not found!",ExceptionCode::NAME_INVAIL_VALUE_EXCEPTION);
         if(!$machine) return $this->view->renderError($response,'machine is not found!',ExceptionCode::NAME_INVAIL_VALUE_EXCEPTION);
+
+        $this->logger->addInfo('isFreeAction-request',[$wxopenid,$machine]);
 
         $date = (new \DateTime())->format('Y-m-d');
 
