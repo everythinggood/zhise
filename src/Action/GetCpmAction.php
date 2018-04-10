@@ -56,7 +56,7 @@ class GetCpmAction implements ActionInterface
 
         $baseUrl = $this->redis->hGet('cpm','baseUrl');
 
-        if($this->redis->hExists('cpm',$tag)){
+        if(!$this->redis->hExists('cpm',$tag)){
             return $this->view->renderError($response,"cpm can not set on [$tag]",ExceptionCode::NAME_EXIST_EXCEPTION,[
                 'url'=>$baseUrl
             ]);
