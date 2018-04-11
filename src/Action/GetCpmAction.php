@@ -76,7 +76,7 @@ class GetCpmAction implements ActionInterface
 
         $this->logger->addInfo('getCpmAction-response',[$wxopenid,$machine,$tag,$url,$baseUrl,$addRequestParam]);
 
-        return $response->withJson([
+        return $this->view->renderSuccess($response,[
             "addRequestParam"=>$addRequestParam,
             'exist'=>true,
             'url'=>$url
