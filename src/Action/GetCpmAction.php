@@ -57,7 +57,7 @@ class GetCpmAction implements ActionInterface
 
         if(!$wxopenid) return $this->view->renderError($response,"wxopenid is not found!",ExceptionCode::NAME_INVAIL_VALUE_EXCEPTION);
         if(!$machine) return $this->view->renderError($response,'machinecode is not found!',ExceptionCode::NAME_INVAIL_VALUE_EXCEPTION);
-        if(!$tag) return $this->view->renderError($response,'tag is not found!',ExceptionCode::NAME_INVAIL_VALUE_EXCEPTION);
+//        if(!$tag) return $this->view->renderError($response,'tag is not found!',ExceptionCode::NAME_INVAIL_VALUE_EXCEPTION);
 
         $url = $this->redis->hGet('cpm','url');
 

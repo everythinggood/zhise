@@ -21,7 +21,7 @@
     request:
     {
     	"wxopenid":"wx102",
-    	"machine":"machine102"
+    	"machinecode":"machine102"
     }
     response:
     {
@@ -44,7 +44,7 @@
         "data": {
             "set": true,
             "wxopenid": "wx102",
-            "machine": "machine102"
+            "machinecode": "machine102"
         },
         "errMsg": "request:ok!",
         "code": 0
@@ -55,13 +55,17 @@
     request:
     {
     	"wxopenid":"wx102",
-    	"machine":"machine102",
+    	"machinecode":"machine102",
     	"tag":"01"
     }
     response:
     {
-        "exist": true,
-        "url": "http://cpc.tuanai.com/ad?id=82"
+        "data": {
+                "exist": true,
+                "url": "http://cpc.tuanai.com/ad?id=82"
+        },
+       "errMsg": "request:ok!",
+       "code": 0
     }
     
     
