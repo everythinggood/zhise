@@ -61,7 +61,7 @@ class GetCpmAction implements ActionInterface
 
         $url = $this->redis->hGet('cpm','url');
 
-        $baseUrl = $this->redis->hGet('cpm','baseUrl');
+        $baseUrl = $this->redis->hGet('cpm','baseurl');
 
         $this->logger->addInfo("getCpmAction-request",[$wxopenid,$machine,$tag,$url,$baseUrl]);
 
