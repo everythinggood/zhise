@@ -40,10 +40,10 @@ class SetFreeAction implements ActionInterface
         /** @var Request $request */
         /** @var Response  $response */
         $wxopenid = $request->getParam('wxopenid');
-        $machine = $request->getParam('machine');
+        $machine = $request->getParam('machinecode');
 
         if(!$wxopenid) return $this->view->renderError($response,"wxopenid is not found!",ExceptionCode::NAME_INVAIL_VALUE_EXCEPTION);
-        if(!$machine) return $this->view->renderError($response,'machine is not found!',ExceptionCode::NAME_INVAIL_VALUE_EXCEPTION);
+        if(!$machine) return $this->view->renderError($response,'machinecode is not found!',ExceptionCode::NAME_INVAIL_VALUE_EXCEPTION);
 
         $date = (new \DateTime())->format('Y-m-d');
 
