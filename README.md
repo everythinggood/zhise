@@ -20,17 +20,23 @@
     post:/api/is/free
     request:
     {
-    	"wxopenid":"wx102",
-    	"machinecode":"machine102"
+    	"wxopenId":"wx102",
+    	"machineCode":"machine102"
     }
     response:
     {
         "data": {
-            "free": true
+            "free": true,
+            "wxCodeUrl":"wxCodeUrl"
         },
         "errMsg": "request:ok!",
         "code": 0
     }
+    
+###获取广告机器
+    post：/api/set/free
+    request:
+    
     
 ###免费机会保存接口
     post:/api/set/free
@@ -44,7 +50,7 @@
         "data": {
             "set": true,
             "wxopenid": "wx102",
-            "machinecode": "machine102"
+            "machine": "machine102"
         },
         "errMsg": "request:ok!",
         "code": 0
@@ -55,17 +61,13 @@
     request:
     {
     	"wxopenid":"wx102",
-    	"machinecode":"machine102",
+    	"machine":"machine102",
     	"tag":"01"
     }
     response:
     {
-        "data": {
-                "exist": true,
-                "url": "http://cpc.tuanai.com/ad?id=82"
-        },
-       "errMsg": "request:ok!",
-       "code": 0
+        "exist": true,
+        "url": "http://cpc.tuanai.com/ad?id=82"
     }
     
     

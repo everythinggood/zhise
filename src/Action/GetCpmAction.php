@@ -51,19 +51,19 @@ class GetCpmAction implements ActionInterface
     {
         /** @var Request $request */
         /** @var Response  $response */
-        $wxopenid = $request->getParam('wxopenid');
-        $machine = $request->getParam('machinecode');
+        $wxOpenId = $request->getParam('wxOpenId');
+        $machine = $request->getParam('machineCode');
         $tag = $request->getParam('tag');
 
-        if(!$wxopenid) return $this->view->renderError($response,"wxopenid is not found!",ExceptionCode::NAME_INVAIL_VALUE_EXCEPTION);
-        if(!$machine) return $this->view->renderError($response,'machinecode is not found!',ExceptionCode::NAME_INVAIL_VALUE_EXCEPTION);
+        if(!$wxOpenId) return $this->view->renderError($response,"wxOpenId is not found!",ExceptionCode::NAME_INVAIL_VALUE_EXCEPTION);
+        if(!$machine) return $this->view->renderError($response,'machineCode is not found!',ExceptionCode::NAME_INVAIL_VALUE_EXCEPTION);
 //        if(!$tag) return $this->view->renderError($response,'tag is not found!',ExceptionCode::NAME_INVAIL_VALUE_EXCEPTION);
 
         $url = $this->redis->hGet('cpm','url');
 
         $baseUrl = $this->redis->hGet('cpm','baseurl');
 
-        $this->logger->addInfo("getCpmAction-request",[$wxopenid,$machine,$tag,$url,$baseUrl]);
+        $this->logger->addInfo("getCpmAction-request",[$wxOpenId,$machine,$tag,$url,$baseUrl]);
 
         if(!$this->redis->hExists('cpm',$tag)){
             return $this->view->renderError($response,"cpm can not set on [$tag]",ExceptionCode::NAME_NOT_EXIST_EXCEPTION,[
@@ -72,12 +72,14 @@ class GetCpmAction implements ActionInterface
             ]);
         }
 
-        $addRequestParam = $this->autoAcountCpm($wxopenid,$machine);
+        $addRequestParam = $this->autoAcountCpm($wxOpenId,$machine);
 
-        $this->logger->addInfo('getCpmAction-response',[$wxopenid,$machine,$tag,$url,$baseUrl,$addRequestParam]);
+        $this->logger->addInfo('getCpmAction-response',[$wxOpenId,$machine,$tag,$url,$baseUrl,$addRequestParam]);
+
+        $this->redis->close();
 
         return $this->view->renderSuccess($response,[
-            "addRequestParam"=>$addRequestParam,
+            "recordCpm"=>$addRequestParam,
             'exist'=>true,
             'url'=>$url
         ]);
