@@ -67,6 +67,14 @@ class GetCpmAction implements ActionInterface
 
         $this->logger->addInfo("getCpmAction-request",[$wxOpenId,$machine,$tag,$url,$baseUrl]);
 
+        if($this->redis->sIsMember('cpmignore',$machine)){
+
+            return $this->view->renderSuccess($response,[
+                'cpmIgnore'=>true,
+                'url'=>$this->redis->hGet('cpm','baseurl')
+            ]);
+        }
+
         if(!$this->redis->hExists('cpm',$tag)){
             return $this->view->renderError($response,"cpm can not set on [$tag]",ExceptionCode::NAME_NOT_EXIST_EXCEPTION,[
                 'exist'=>false,
