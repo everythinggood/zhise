@@ -59,6 +59,8 @@ class GetCpmAction implements ActionInterface
         if(!$machine) return $this->view->renderError($response,'machineCode is not found!',ExceptionCode::NAME_INVAIL_VALUE_EXCEPTION);
 //        if(!$tag) return $this->view->renderError($response,'tag is not found!',ExceptionCode::NAME_INVAIL_VALUE_EXCEPTION);
 
+        $this->logger->addInfo('getCpmAction-request',$request->getParams());
+
         $url = $this->redis->hGet('cpm','url');
 
         $baseUrl = $this->redis->hGet('cpm','baseurl');
@@ -72,7 +74,7 @@ class GetCpmAction implements ActionInterface
             ]);
         }
 
-        $addRequestParam = $this->autoAcountCpm($wxOpenId,$machine);
+        $addRequestParam = $this->autoAccountCpm($wxOpenId,$machine);
 
         $this->logger->addInfo('getCpmAction-response',[$wxOpenId,$machine,$tag,$url,$baseUrl,$addRequestParam]);
 
@@ -85,7 +87,7 @@ class GetCpmAction implements ActionInterface
         ]);
     }
 
-    protected function autoAcountCpm($wxopenid,$machine){
+    protected function autoAccountCpm($wxopenid, $machine){
         $listName = "cpm".(new \DateTime())->format('Y-m-d');
         return $this->redis->lPush($listName,join('_',[$wxopenid,$machine]));
     }

@@ -42,26 +42,51 @@ class IsFreeAction implements ActionInterface
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args)
     {
         /** @var Request $request */
-        /** @var Response  $response */
-        $wxopenid = $request->getParam('wxopenid');
-        $machine = $request->getParam('machinecode');
+        /** @var Response $response */
+        $wxOpenId = $request->getParam('wxOpenId');
+        $machine = $request->getParam('machineCode');
 
-        if(!$wxopenid) return $this->view->renderError($response,"wxopenid is not found!",ExceptionCode::NAME_INVAIL_VALUE_EXCEPTION);
-        if(!$machine) return $this->view->renderError($response,'machinecode is not found!',ExceptionCode::NAME_INVAIL_VALUE_EXCEPTION);
+        if (!$wxOpenId) return $this->view->renderError($response, "wxOpenId is not found!", ExceptionCode::NAME_INVAIL_VALUE_EXCEPTION);
+        if (!$machine) return $this->view->renderError($response, 'machineCode is not found!', ExceptionCode::NAME_INVAIL_VALUE_EXCEPTION);
 
-        $this->logger->addInfo('isFreeAction-request',[$wxopenid,$machine]);
+        $this->logger->addInfo('isFreeAction-request', $request->getParams());
 
         $date = (new \DateTime())->format('Y-m-d');
 
-        $key = $wxopenid."_$date";
+        $adKey = "ad_$date";
 
-        if($this->redis->exists($key)){
-            return $this->view->renderError($response,"wxopenid is exist!",ExceptionCode::NAME_EXIST_EXCEPTION);
+        //今天有没有免费领取机会
+        if ($this->redis->hExists($adKey,$wxOpenId)) {
+            return $this->view->renderError($response, "wxOpenId is exist!", ExceptionCode::NAME_EXIST_EXCEPTION);
         }
 
-        return $this->view->renderSuccess($response,[
-           'free'=>true
+        //增加扫码机器和微信用户绑定关系
+        $this->redis->hSet($adKey . '_scan', $wxOpenId, $machine);
+
+        //第一个用户导粉到联通公众号
+        $adWxCodeUrl = null;
+        if ($ad = $this->redis->hGet('ad', '10010')) {
+
+
+            //此广告已存在此粉丝
+            if (!$this->redis->hExists($ad . '_user', $wxOpenId)) {
+
+                $adWxCodeUrl = $this->redis->hGet($ad, 'wxCodeUrl');
+
+            }
+
+        }
+
+        $this->redis->close();
+
+        return $this->view->renderSuccess($response, [
+            'free' => true,
+            'wxCodeUrl' => $adWxCodeUrl
         ]);
+    }
+
+    protected function isFree($wxOpenId,$machine){
+
     }
 
 }
