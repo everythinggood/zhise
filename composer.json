@@ -27,7 +27,7 @@
         "psr-4": {
             "Tests\\": "tests/",
             "Action\\": "src/Action/",
-            "Container\\View\\": "src/Container/View",
+            "Container\\View\\": "src/Container/",
             "Contract\\": "src/Contract"
         }
     },
