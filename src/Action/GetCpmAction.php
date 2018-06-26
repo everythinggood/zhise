@@ -73,6 +73,7 @@ class GetCpmAction implements ActionInterface
         if ($this->redis->hExists(RedisKey::KEY_CPM_FILTER, $machineCode)) {
             $url = $this->redis->hGet(RedisKey::KEY_CPM_FILTER, $machineCode);
             return $this->view->renderSuccess($response, [
+                'exist' => false,
                 'url' => $url,
                 'filter' => [$machineCode, $url]
             ]);
