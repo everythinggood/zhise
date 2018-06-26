@@ -30,25 +30,25 @@ $container['view'] = function (){
 };
 
 //errorHandler
-//$container['errorHandler'] = function ($c) {
-//    return function ($request, $response, $exception) use ($c) {
-//        /** @var \Monolog\Logger $logger */
-//        $logger = $c['logger'];
-//        $logger->error(strval($exception), (array)$request);
-//        return $c['response']->withStatus(500)
-//            ->withHeader('Content-Type', 'text/html')
-//            ->write('Something went wrong!');
-//    };
-//};
-//
-//$container['phpErrorHandler'] = function ($c) {
-//    return function ($request, $response, $error) use ($c) {
-//        /** @var \Monolog\Logger $logger */
-//        $logger = $c['logger'];
-//        $logger->error(strval($error), (array)$request);
-//        return $c['response']
-//            ->withStatus(500)
-//            ->withHeader('Content-Type', 'text/html')
-//            ->write('Something went wrong!');
-//    };
-//};
+$container['errorHandler'] = function ($c) {
+    return function ($request, $response, $exception) use ($c) {
+        /** @var \Monolog\Logger $logger */
+        $logger = $c['logger'];
+        $logger->error(strval($exception), (array)$request);
+        return $c['response']->withStatus(500)
+            ->withHeader('Content-Type', 'text/html')
+            ->write('Something went wrong!');
+    };
+};
+
+$container['phpErrorHandler'] = function ($c) {
+    return function ($request, $response, $error) use ($c) {
+        /** @var \Monolog\Logger $logger */
+        $logger = $c['logger'];
+        $logger->error(strval($error), (array)$request);
+        return $c['response']
+            ->withStatus(500)
+            ->withHeader('Content-Type', 'text/html')
+            ->write('Something went wrong!');
+    };
+};
