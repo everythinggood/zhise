@@ -70,6 +70,7 @@ class GetCpmAction implements ActionInterface
 
         $addRequestParam = $this->autoAccountCpm($wxOpenId, $machineCode);
 
+        $machineCode = strtoupper($machineCode);
         if ($this->redis->hExists(RedisKey::KEY_CPM_FILTER, $machineCode)) {
             $url = $this->redis->hGet(RedisKey::KEY_CPM_FILTER, $machineCode);
             return $this->view->renderSuccess($response, [
