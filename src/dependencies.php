@@ -21,7 +21,7 @@ $container['logger'] = function ($c) {
 $container['redis'] = function(){
   $redis = new Redis();
   $redis->connect("redis",6379);
-//  $redis->auth("zhise");
+  $redis->auth("zhise");
   return $redis;
 };
 
