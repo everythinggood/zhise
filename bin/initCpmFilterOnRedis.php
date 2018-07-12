@@ -15,19 +15,27 @@ $app = new \Slim\App($settings);
 // Set up dependencies
 require __DIR__ . '/../src/dependencies.php';
 
-$json = file_get_contents(__DIR__.'/cpm_filter.json');
+//$json = file_get_contents(__DIR__.'/cpm_filter.json');
+//
+//$cpmFilter = json_decode($json,true);
 
-$cpmFilter = json_decode($json,true);
+$handle = fopen(__DIR__.'/cpm_filter.csv','r');
+
 /** @var Redis $redis */
 $redis = $app->getContainer()['redis'];
 
 $redis = $redis->multi();
+$count = 0;
 
-foreach ($cpmFilter as $machineId=>$url){
-    $redis->hSet(\Container\View\RedisKey::KEY_CPM_FILTER,$machineId,$url);
+while($data = fgetcsv($handle)){
+    $redis->hSet(\Container\View\RedisKey::KEY_CPM_FILTER,$data[0],$data[1]);
+    $count ++;
 }
 
+echo $count;
+
 $result = $redis->exec();
+$redis->close();
 
 file_put_contents(__DIR__.'/cpm_filter.log',var_export($result));
 
