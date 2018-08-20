@@ -9,8 +9,8 @@
 $key = $argv[1];
 $cpmUrl = $argv[2];
 
-echo $key.PHP_EOL;
-echo $cpmUrl.PHP_EOL;
+echo "key=".$key.PHP_EOL;
+echo "cpmUrl=".$cpmUrl.PHP_EOL;
 
 if(!$key) throw new Exception("you need redis key to set!");
 if(!$cpmUrl) throw new Exception("you need cpm url to search!");
@@ -25,7 +25,7 @@ $app = new \Slim\App($settings);
 require __DIR__ . '/../src/dependencies.php';
 
 /** @var Redis $redis */
-//$redis = $app->getContainer()['redis'];
+$redis = $app->getContainer()['redis'];
 
 $handle = fopen(__DIR__.'/cpm_filter.csv','r');
 
