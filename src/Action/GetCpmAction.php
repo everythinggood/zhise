@@ -68,11 +68,11 @@ class GetCpmAction implements ActionInterface
 
         $this->logger->addInfo("getCpmAction-request", [$wxOpenId, $machineCode, $tag, $url, $baseUrl]);
 
-        $addRequestParam = $this->autoAccountCpm($wxOpenId, $machineCode);
-
         $machineCode = strtoupper($machineCode);
         if ($this->redis->hExists(RedisKey::KEY_CPM_FILTER, $machineCode)) {
             $url = $this->redis->hGet(RedisKey::KEY_CPM_FILTER, $machineCode);
+            $this->autoAccountCpm($wxOpenId,$machineCode,$url);
+            $this->redis->close();
             return $this->view->renderSuccess($response, [
                 'exist' => false,
                 'url' => $url,
@@ -81,27 +81,30 @@ class GetCpmAction implements ActionInterface
         }
 
         if (!$this->redis->hExists(RedisKey::KEY_CPM, $tag)) {
+            $this->autoAccountCpm($wxOpenId,$machineCode,$baseUrl);
+            $this->redis->close();
             return $this->view->renderError($response, "cpm can not set on [$tag]", ExceptionCode::NAME_NOT_EXIST_EXCEPTION, [
                 'exist' => false,
                 'url' => $baseUrl
             ]);
         }
 
+        $this->autoAccountCpm($wxOpenId,$machineCode,$url);
+
         $this->logger->addInfo('getCpmAction-response', [$wxOpenId, $machineCode, $tag, $url, $baseUrl, $addRequestParam]);
 
         $this->redis->close();
 
         return $this->view->renderSuccess($response, [
-            "recordCpm" => $addRequestParam,
             'exist' => true,
             'url' => $url
         ]);
     }
 
-    protected function autoAccountCpm($wxopenid, $machine)
+    protected function autoAccountCpm($wxopenid, $machine,$url)
     {
         $listName = "cpm" . (new \DateTime())->format('Y-m-d');
-        return $this->redis->lPush($listName, join('_', [$wxopenid, $machine]));
+        return $this->redis->lPush($listName, join('_', [$wxopenid, $machine,$url]));
     }
 
 }
